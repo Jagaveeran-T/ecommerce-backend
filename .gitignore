@@ -1,0 +1,52 @@
+# Byte-compiled / cache files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# C extensions
+*.so
+
+# Django-related files
+*.log
+*.pot
+*.pyc
+*.pyo
+*.db
+*.sqlite3
+db.sqlite3
+
+# Media and static files (auto-generated or uploaded)
+media/
+static/
+
+# Environment variables / secrets
+.env
+*.env
+
+# Virtual environments
+venv/
+.venv/
+ENV/
+env.bak/
+venv.bak/
+
+# VS Code settings
+.vscode/
+
+# OS-specific junk files
+.DS_Store
+Thumbs.db
+
+# Twisted & Channels runtime files (optional)
+twisted.plugins/
+instance/
+
+# Redis socket/log files (if used locally)
+*.rdb
+*.log
+*.pid
+dump.rdb
+
+# Migrations cache files (NOT the actual .py migration files)
+**/migrations/__pycache__/
+**/migrations/*.pyc
