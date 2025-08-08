@@ -38,9 +38,14 @@ class CartSerializer(serializers.ModelSerializer):
         fields='__all__'
         
 class CartItemSerializer(serializers.ModelSerializer):
+    product=serializers.PrimaryKeyRelatedField(
+        queryset=Product.objects.all(),
+        write_only=True
+    )
+    product_name=serializers.CharField(source='product.name',read_only=True)
     class Meta:
         model=CartItem
-        fields=['id','product','quantity','total']
+        fields=['id','product_name','product','quantity','total']
         read_only_fields=['total','quantity']
     
 class OrderItemSerializer(serializers.ModelSerializer):
