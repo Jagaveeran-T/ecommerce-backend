@@ -180,6 +180,31 @@ class OrderView(viewsets.ModelViewSet):
 
         cart_items.delete()
 
+class VendorDashboard(APIView):
+    permission_classes=[IsAuthenticated,IsVendor]
+
+    def get(self,request):
+       vendor=request.user
+       total_product=Product.objects.filter(vendor=vendor).count()
+
+       vendor_items=OrderItems.objects.filter(product__vendor=vendor)
+
+       total_orders=vendor_items.values('order').distinct().count()
+
+       total_items_sold=vendor_items.aggregate(total_qty=Sum('quantity')).get('total_qty',0) or 0
+
+       total_amount=vendor_items.aggregate(Total=Sum('total')).get('Total',0) or 0
+
+       return Response({
+           "Summary":{
+               "Total Product":total_product,
+               "Total Orders" : total_orders,
+               "Total Ordered Items" : total_items_sold,
+               "Total Revenue" : total_amount
+           }
+       })
+    
+
 class VendorOrderItems(viewsets.ReadOnlyModelViewSet):
     serializer_class=OrderItemSerializer
     permission_classes=[IsAuthenticated,IsVendor]
