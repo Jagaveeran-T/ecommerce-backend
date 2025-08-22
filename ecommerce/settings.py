@@ -3,7 +3,10 @@
 from pathlib import Path
 
 import os
+import dj_database_url
 from dotenv import load_dotenv
+
+PORT = os.getenv("PORT", 8000)
 
 import pymysql
 pymysql.install_as_MySQLdb()
@@ -26,7 +29,19 @@ SECRET_KEY = os.getenv("SECRET_KEY")
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.getenv("DEBUG","False") == "True"
 
-ALLOWED_HOSTS = os.getenv("ALLOWED_HOSTS","").split(",")
+# ALLOWED_HOSTS = os.getenv("ALLOWED_HOSTS","").split(",")
+
+allowed_hosts = os.getenv("ALLOWED_HOSTS", "")
+if allowed_hosts:
+    ALLOWED_HOSTS = [host.strip() for host in allowed_hosts.split(",")]
+else:
+    ALLOWED_HOSTS = []
+
+ALLOWED_HOSTS.extend([
+    "ecommerce-backend-production-6069.up.railway.app",
+    "localhost",
+    "127.0.0.1",
+])
 
 
 # Application definition
@@ -66,6 +81,7 @@ CHANNEL_LAYERS={
 MIDDLEWARE = [
     "corsheaders.middleware.CorsMiddleware",
     "django.middleware.security.SecurityMiddleware",
+    "whitenoise.middleware.WhiteNoiseMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
@@ -76,7 +92,8 @@ MIDDLEWARE = [
 
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",
-    "https://4e9c572c917b.ngrok-free.app",
+    "https://ecommerce-backend-production-6069.up.railway.app",
+
 ]
 
 CORS_ALLOW_CREDENTIALS = True
@@ -105,16 +122,33 @@ WSGI_APPLICATION = "ecommerce.wsgi.application"
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
-DATABASES = {
-    "default": {
-        "ENGINE": os.getenv("DB_ENGINE"),
-        "NAME": os.getenv("DB_NAME"),
-        "USER":os.getenv("DB_USER"),
-        "PASSWORD":os.getenv("DB_PASSWORD"),
-        "HOST":os.getenv("DB_HOST"),
-        "PORT":os.getenv("DB_PORT")
+# DATABASES = {
+#     "default": {
+#         "ENGINE": os.getenv("DB_ENGINE"),
+#         "NAME": os.getenv("DB_NAME"),
+#         "USER":os.getenv("DB_USER"),
+#         "PASSWORD":os.getenv("DB_PASSWORD"),
+#         "HOST":os.getenv("DB_HOST"),
+#         "PORT":os.getenv("DB_PORT")
+#     }
+# }
+
+
+if os.getenv("DATABASE_URL"):
+    DATABASES = {
+        "default": dj_database_url.config(default=os.getenv("DATABASE_URL"))
     }
-}
+else:
+    DATABASES = {
+        "default": {
+            "ENGINE": os.getenv("DB_ENGINE", "django.db.backends.sqlite3"),
+            "NAME": os.getenv("DB_NAME", BASE_DIR / "db.sqlite3"),
+            "USER": os.getenv("DB_USER", ""),
+            "PASSWORD": os.getenv("DB_PASSWORD", ""),
+            "HOST": os.getenv("DB_HOST", ""),
+            "PORT": os.getenv("DB_PORT", ""),
+        }
+    }
 
 
 # Password validation
@@ -155,6 +189,9 @@ STATIC_URL = "static/"
 MEDIA_URL="media/"
 MEDIA_ROOT = os.path.join(BASE_DIR,'media')
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+
+if not DEBUG:
+    STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field

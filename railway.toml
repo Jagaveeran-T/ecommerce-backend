@@ -1,0 +1,16 @@
+[service]
+name = "ecommerce-backend"
+owner = "Jagaveeran-T"
+
+[build]
+builder = "nixpacks"
+
+[deploy]
+startCommand = "gunicorn ecommerce.wsgi:application --bind 0.0.0.0:$PORT --workers 2"
+preDeployCommand = "python manage.py makemigrations && python manage.py migrate && python manage.py collectstatic --noinput"
+
+[networking]
+port = 8080
+
+[env]
+file = ".env"
