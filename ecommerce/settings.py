@@ -6,7 +6,6 @@ import os
 import dj_database_url
 from dotenv import load_dotenv
 
-PORT = os.getenv("PORT", 8000)
 
 import pymysql
 pymysql.install_as_MySQLdb()
@@ -38,11 +37,16 @@ else:
     ALLOWED_HOSTS = []
 
 ALLOWED_HOSTS.extend([
-    "ecommerce-backend-production-6069.up.railway.app",
+    "distinguished-laughter-production.up.railway.app",
     "localhost",
     "127.0.0.1",
+    ".railway.app",
 ])
 
+CSRF_TRUSTED_ORIGINS = [
+    "https://distinguished-laughter-production.up.railway.app",
+    "https://*.railway.app",
+]
 
 # Application definition
 
@@ -92,11 +96,15 @@ MIDDLEWARE = [
 
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",
-    "https://ecommerce-backend-production-6069.up.railway.app",
-
+    "https://ecommerce-backend-production-6070.up.railway.app",
+    "https://distinguished-laughter-production.up.railway.app",
 ]
 
 CORS_ALLOW_CREDENTIALS = True
+
+CORS_ALLOWED_ORIGIN_REGEXES = [
+    r"^https://.*\.railway\.app$",
+]
 
 
 ROOT_URLCONF = "ecommerce.urls"
