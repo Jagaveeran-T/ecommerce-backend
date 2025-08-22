@@ -5,7 +5,7 @@ from django.db.models import Sum
 class ProductSerializer(serializers.ModelSerializer):
     class Meta:
         model=Product
-        fields=['id','name','image','price']
+        fields=['id','name','image','description','price']
         read_only_fields=['vendor']
 
 class ProductDetailsCustomerSerializer(serializers.ModelSerializer):

@@ -50,7 +50,13 @@ CHANNEL_LAYERS={
     "default":{
         "BACKEND":"channels_redis.core.RedisChannelLayer",
         "CONFIG":{
-            "hosts":[("127.0.0.1",6379)]
+            "hosts":[
+                (
+                    os.getenv("REDIS_HOST", "127.0.0.1"), 
+                    int(os.getenv("REDIS_PORT", 6379))
+                )
+            ],
+            "password": os.getenv("REDIS_PASSWORD", None),
         }
     }
 }
@@ -67,7 +73,9 @@ MIDDLEWARE = [
 
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",
+    "https://4e9c572c917b.ngrok-free.app",
 ]
+
 CORS_ALLOW_CREDENTIALS = True
 
 
@@ -143,6 +151,7 @@ USE_TZ = True
 STATIC_URL = "static/"
 MEDIA_URL="media/"
 MEDIA_ROOT = os.path.join(BASE_DIR,'media')
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field

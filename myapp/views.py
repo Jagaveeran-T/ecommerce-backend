@@ -72,12 +72,12 @@ class AddProducts(generics.CreateAPIView):
         admin_group_name="admin_notifications"
         message=f"New Product {product.name} added by {user.username}"
 
-        async_to_sync(channel_layer.group_send(
+        async_to_sync(channel_layer.group_send)(
             admin_group_name,{
                 "type":"send_notification",
                 "message":message
             }
-        ))
+        )
         admin_user=User.objects.filter(is_staff=True).first()
         if admin_user:
             Notifications.objects.create(user=admin_user,message=message)
