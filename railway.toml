@@ -7,7 +7,8 @@ builder = "nixpacks"
 
 [deploy]
 startCommand = "gunicorn ecommerce.wsgi:application --bind 0.0.0.0:$PORT --workers 2"
-preDeployCommand = "python manage.py makemigrations && python manage.py migrate && python manage.py collectstatic --noinput"
+
+preDeployCommand = "python manage.py makemigrations && python manage.py migrate && python manage.py shell -c \"\nfrom django.contrib.auth import get_user_model\nUser = get_user_model()\nif not User.objects.filter(username='admin').exists():\n    admin_user = User.objects.create_superuser('admin', '', 'Admin@1234')\n    admin_user.role = 'admin'\n    admin_user.save()\n    print('Superuser created successfully!')\nelse:\n    print('Admin user already exists')\n\" && python manage.py collectstatic --noinput"
 
 [networking]
 port = 8080
