@@ -68,20 +68,15 @@ INSTALLED_APPS = [
 ]
 ASGI_APPLICATION='ecommerce.asgi.application'
 
-CHANNEL_LAYERS={
-    "default":{
-        "BACKEND":"channels_redis.core.RedisChannelLayer",
-        "CONFIG":{
-            "hosts":[
-                (
-                    os.getenv("REDIS_HOST", "127.0.0.1"), 
-                    int(os.getenv("REDIS_PORT", 6379))
-                )
-            ],
-            "password": os.getenv("REDIS_PASSWORD", None),
-        }
-    }
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "channels_redis.core.RedisChannelLayer",
+        "CONFIG": {
+            "hosts": [os.getenv("REDIS_URL", "redis://127.0.0.1:6379")],
+        },
+    },
 }
+
 MIDDLEWARE = [
     "corsheaders.middleware.CorsMiddleware",
     "django.middleware.security.SecurityMiddleware",
